@@ -1,0 +1,53 @@
+<svg version="1.1" width="1602.682746" height="1717.160085" viewBox="0 0 1602.682746 1717.160085" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Go Board Surface</title>
+
+  <defs>
+    <filter id="woodGrain" x="0" y="0" width="1" height="1">
+      <feTurbulence type="turbulence" baseFrequency="0.16,0.0008" numOctaves="1" result="noise2" seed="3" stitchTiles="stitch" />
+      <feColorMatrix in="noise2" type="matrix" values="-0.2126 -0.7152 -0.0722 0 0
+					 -0.2126 -0.7152 -0.0722 0 0
+					 -0.2126 -0.7152 -0.0722 0 0
+					 0 0 0 0.2 0" result="tint2" />
+
+      <feTurbulence type="turbulence" baseFrequency="0.001" numOctaves="4" result="noise3" seed="76543" stitchTiles="stitch" />
+
+      <feDisplacementMap in="tint2" in2="noise3" scale="12.5" xChannelSelector="R" yChannelSelector="G" result="grainy" />
+
+      <feMerge result="basicGrain">
+        <feMergeNode in="SourceGraphic" />
+        <feMergeNode in="grainy" />
+      </feMerge>
+    </filter>
+
+    <pattern id="grid-horizontal-lines" x="51.382568" y="50.815848499999994" width="83.11886" height="89.541681" patternUnits="userSpaceOnUse" patternContentUnits="userSpaceOnUse">
+      <line x1="0.0" y1="1.889065" x2="83.11886" y2="1.889065" stroke="black" stroke-width="3.77813" />
+    </pattern>
+
+    <pattern id="grid-vertical-lines" x="51.382568" y="50.815848499999994" width="83.11886" height="89.541681" patternUnits="userSpaceOnUse" patternContentUnits="userSpaceOnUse">
+      <line x1="1.889065" y1="0.0" x2="1.889065" y2="89.541681" stroke="black" stroke-width="3.77813" />
+    </pattern>
+
+    <g id="star">
+      <circle cx="1.889065" cy="1.889065" r="7.55626" fill="black" />
+    </g>
+  </defs>
+
+  <rect width="1602.682746" height="1717.160085" style="fill: rgb(220,168,71); filter: url(#woodGrain);" />
+
+  <!--
+  <rect x="51.382568" y="50.815848499999994" width="1499.91761" height="1615.5283880000002" fill="url(#grid-horizontal-lines)" />
+  <rect x="51.382568" y="50.815848499999994" width="1499.91761" height="1615.5283880000002" fill="url(#grid-vertical-lines)" />
+
+  <use xlink:href="#star" x="300.739148" y="319.44089149999996" />
+  <use xlink:href="#star" x="799.452308" y="319.44089149999996" />
+  <use xlink:href="#star" x="1298.1654680000001" y="319.44089149999996" />
+
+  <use xlink:href="#star" x="300.739148" y="856.6909775" />
+  <use xlink:href="#star" x="799.452308" y="856.6909775" />
+  <use xlink:href="#star" x="1298.1654680000001" y="856.6909775" />
+
+  <use xlink:href="#star" x="300.739148" y="1393.9410635" />
+  <use xlink:href="#star" x="799.452308" y="1393.9410635" />
+  <use xlink:href="#star" x="1298.1654680000001" y="1393.9410635" />
+  -->
+</svg>

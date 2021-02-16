@@ -1,0 +1,201 @@
+<div class="d-flex h-100 flex-column w-100">
+    <div class="flex-grow-1 w-100">
+        <div class="h-100 w-100" *ngIf="currentNode; then hasNode else waitingForNode"></div>
+    </div>
+
+    <div class="my-2 row">
+        <div class="col">
+            <div
+                class="bg-light card text-dark"
+                *ngIf="performance$ | async as performance"
+                [ngClass]="{ 'border-primary': performance.active, 'border-secondary': !performance.active }"
+            >
+                <div
+                    class="card-header text-center text-light"
+                    [ngClass]="{ 'bg-primary': performance.active, 'bg-secondary': !performance.active }"
+                >
+                    Search Performance
+                </div>
+                <div class="card-body d-flex justify-content-center">
+                    <table class="table table-borderless table-light table-sm" style="width: auto;">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Positions Analyzed:</th>
+                                <td>{{ performance.completed | number }} / {{ performance.submitted | number }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Search Time:</th>
+                                <td>{{ performance.searchTime | number }} s</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Visits:</th>
+                                <td>{{ performance.visits | number }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Seconds per Position:</th>
+                                <td>{{ performance.secondsPerPosition | number }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Visits per Second:</th>
+                                <td>{{ performance.visitsPerSecond | number }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #hasNode>
+    <div class="h-100 w-100" *ngIf="analysis$ | async as a; else spinner">
+        <div class="d-flex h-100 flex-column w-100">
+            <!-- Player to Play + Analysis Progress -->
+            <div class="d-flex flex-grow-0 mt-2 row w-100">
+                <!-- Player to Play -->
+                <div class="col text-center w-100">
+                    <h5 class="card-title">{{ currentNode.data.game.turn === 1 ? 'Black' : 'White' }} to Play</h5>
+                </div>
+
+                <!-- Analysis Progress -->
+                <div class="col h-100">
+                    <div class="progress h-100">
+                        <div
+                                class="progress-bar"
+                                role="progressbar"
+                                [style]="{ 'width': '' + (a.movesComplete * 100. / a.moves) + '%'}"
+                                [ngClass]="{ 'bg-success': a.complete, 'progress-bar-animated': !a.complete, 'progress-bar-striped': !a.complete }"
+                        >
+                            {{ a.movesComplete }} / {{ a.moves }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Game Exploration + Data View -->
+            <div class="d-flex flex-grow-1 mt-2 row w-100">
+                <!-- Game Exploration -->
+                <div class="col d-flex flex-column justify-content-center h-100">
+                    <!-- WGo.JS board -->
+                    <div class="flex-shrink-1 w-100">
+                        <gr-wgo></gr-wgo>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="my-3 d-flex justify-content-center">
+                        <div class="btn-group text-center" role="group" aria-label="search navigation controls">
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-light"
+                                    [disabled]="currentNode === searchTree"
+                                    (click)="onFirst()"
+                            >
+                                <i class="pi pi-fw pi-step-backward"></i>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-light"
+                                    [disabled]="!findPreviousBranchingPoint()"
+                                    (click)="onPreviousBranch()"
+                            >
+                                <i class="pi pi-fw pi-backward"></i>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-light"
+                                    [disabled]="!currentNode.parent"
+                                    (click)="onUndo()"
+                            >
+                                <i class="pi pi-fw pi-caret-left"></i>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-outline-light"
+                                (click)="onPass()"
+                            >
+                                Pass
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-light"
+                                    [disabled]="currentNode.branches.length !== 1"
+                                    (click)="onRedo()"
+                            >
+                                <i class="pi pi-fw pi-caret-right"></i>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-light"
+                                    [disabled]="!findNextBranchingPoint()"
+                                    (click)="onNextBranch()"
+                            >
+                                <i class="pi pi-fw pi-forward"></i>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-light"
+                                    [disabled]="currentNode.branches.length === 0"
+                                    (click)="onLast()"
+                            >
+                                <i class="pi pi-fw pi-step-forward"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- State Table -->
+                    <div class="d-flex flex-grow-1 justify-content-center">
+                        <table class="table table-bordered table-dark">
+                            <tbody>
+                            <tr>
+                                <th scope="row">Position #:</th>
+                                <td>{{ currentNode.position }} of {{ getCurrentBranchLength() }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Ruleset:</th>
+                                <td>{{ currentNode.data.state.ruleset | titlecase }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Komi:</th>
+                                <td>{{ currentNode.data.state.komi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Black Captures:</th>
+                                <td>{{ currentNode.data.game.getCaptureCount(1) }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">White Captures:</th>
+                                <td>{{ currentNode.data.game.getCaptureCount(2) }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Current Continuations:</th>
+                                <td>{{ currentNode.branches.length }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Data View -->
+                <div class="col h-100">
+                    <div class="w-100">
+                        <img>
+                            <bg-data-grid [data]="a"></bg-data-grid>
+                        <img>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #waitingForNode>
+    Waiting for Node...
+</ng-template>
+
+<ng-template #spinner>
+    <div class="h-100 m-2 text-center w-100">
+        <p>Starting search...</p>
+        <div class="spinner-border text-light" role="status" style="height: 5rem; width:5rem;">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-template>

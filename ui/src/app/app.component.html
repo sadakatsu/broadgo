@@ -1,0 +1,11 @@
+<div class="container h-100">
+    <div class="div" *ngIf="root; then search else form"></div>
+</div>
+
+<ng-template #search>
+    <bg-search [root]="root"></bg-search>
+</ng-template>
+
+<ng-template #form>
+    <bg-setup (initialState)="onInitialState($event)"></bg-setup>
+</ng-template>

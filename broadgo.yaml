@@ -1,0 +1,5 @@
+executable: "E:/KataGo-1.8.0/katago.exe"
+configuration: "E:/KataGo-1.8.0/shallow.cfg"
+model: "E:/KataGo-1.8.0/g170e-b10c128-s1141046784-d204142634.bin.gz"
+analysisThreads: 1
+searchThreads: 6

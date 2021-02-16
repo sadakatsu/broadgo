@@ -81,6 +81,7 @@ class KataGo:
         if not self._ready:
             raise Exception('KataGo is not ready!  Learn some damn patience.')
         command = jsons.dumps(message, strip_nulls=True) + os.linesep
+        # print('??', command)
         encoded = command.encode('utf-8')
         self._process.stdin.write(encoded)
         self._process.stdin.flush()
@@ -99,15 +100,15 @@ class KataGo:
 
 
 class KataGoPlayer(enum.Enum):
-    B = 'B'
-    W = 'W'
+    b = 'b'
+    w = 'w'
 
     @property
     def opposite(self):
-        return KataGoPlayer.B if self is KataGoPlayer.W else KataGoPlayer.W
+        return KataGoPlayer.b if self is KataGoPlayer.w else KataGoPlayer.w
 
     def __str__(self):
-        return 'B' if self is KataGoPlayer.B else 'W'
+        return 'B' if self is KataGoPlayer.b else 'W'
 
     def __repr__(self):
         return self.__str__()
@@ -163,6 +164,15 @@ class RootAnalysis:
     winrate: float
     visits: int
 
+    def negate(self):
+        return RootAnalysis(
+            -self.scoreSelfplay,
+            -self.scoreLead,
+            -self.utility,
+            1. - self.winrate,
+            self.visits
+        )
+
 
 @dataclass_json
 @dataclass()
@@ -185,10 +195,10 @@ class MoveAnalysis(RootAnalysis):
 class Response:
     id: str
 
-    turnNumber: int
     rootInfo: RootAnalysis
     moveInfos: List[MoveAnalysis] = field(default_factory=list)
 
+    turnNumber: Optional[int] = 0
     isDuringSearch: Optional[bool] = None
     ownership: Optional[List[float]] = field(default_factory=list)
     policy: Optional[List[float]] = field(default_factory=list)
