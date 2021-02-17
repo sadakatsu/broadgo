@@ -1,0 +1,172 @@
+E:\KataGo-1.8.0>katago genconfig -model g170e-b10c128-s1141046784-d204142634.bin.gz -output broadgo.cfg
+File broadgo.cfg already exists, okay to overwrite it with an entirely new config (y/n)?
+y
+
+=========================================================================
+RULES
+
+What rules should KataGo use by default for play and analysis?
+(chinese, japanese, korean, tromp-taylor, aga, chinese-ogs, new-zealand, bga, stone-scoring, aga-button):
+japanese
+
+=========================================================================
+SEARCH LIMITS
+
+When playing games, KataGo will always obey the time controls given by the GUI/tournament/match/online server.
+But you can specify an additional limit to make KataGo move much faster. This does NOT affect analysis/review,
+only affects playing games. Add a limit? (y/n) (default n):
+n
+
+NOTE: No limits configured for KataGo. KataGo will obey time controls provided by the GUI or server or match script
+but if they don't specify any, when playing games KataGo may think forever without moving. (press enter to continue)
+
+
+When playing games, KataGo can optionally ponder during the opponent's turn. This gives faster/stronger play
+in real games but should NOT be enabled if you are running tests with fixed limits (pondering may exceed those
+limits), or to avoid stealing the opponent's compute time when testing two bots on the same machine.
+Enable pondering? (y/n, default n):n
+
+=========================================================================
+GPUS AND RAM
+
+Finding available GPU-like devices...
+Found OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) (score 11000102)
+
+Specify devices/GPUs to use (for example "0,1,2" to use devices 0, 1, and 2). Leave blank for a default SINGLE-GPU config:
+0
+
+By default, KataGo will cache up to about 3GB of positions in memory (RAM), in addition to
+whatever the current search is using. Specify a different max in GB or leave blank for default:
+16
+
+=========================================================================
+PERFORMANCE TUNING
+Actually broadgo.cfg already exists, can skip performance tuning if desired and just use
+the number of threads (80) already in that config (all other settings will still be overwritten).
+Skip performance tuning (y/n)?
+n
+
+Specify number of visits to use test/tune performance with, leave blank for default based on GPU speed.
+Use large number for more accurate results, small if your GPU is old and this is taking forever:
+64
+
+Specify number of seconds/move to optimize performance for (default 5), leave blank for default:
+3600
+2021-02-16 18:09:45-0500: Loading model and initializing benchmark...
+
+2021-02-16 18:09:45-0500: nnRandSeed0 = 18047150091234002968
+2021-02-16 18:09:45-0500: After dedups: nnModelFile0 = g170e-b10c128-s1141046784-d204142634.bin.gz useFP16 auto useNHWC auto
+2021-02-16 18:09:45-0500: Found OpenCL Platform 0: NVIDIA CUDA (NVIDIA Corporation) (OpenCL 1.2 CUDA 11.2.135)
+2021-02-16 18:09:45-0500: Found 1 device(s) on platform 0 with type CPU or GPU or Accelerator
+2021-02-16 18:09:45-0500: Found OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) (score 11000102)
+2021-02-16 18:09:45-0500: Creating context for OpenCL Platform: NVIDIA CUDA (NVIDIA Corporation) (OpenCL 1.2 CUDA 11.2.135)
+2021-02-16 18:09:45-0500: Using OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) OpenCL 1.2 CUDA (Extensions: cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_fp64 cl_khr_byte_addressable_store cl_khr_icd cl_khr_gl_sharing cl_nv_compiler_options cl_nv_device_attribute_query cl_nv_pragma_unroll cl_nv_d3d10_sharing cl_khr_d3d10_sharing cl_nv_d3d11_sharing cl_nv_copy_opts cl_nv_create_buffer cl_khr_int64_base_atomics cl_khr_int64_extended_atomics cl_khr_device_uuid)
+2021-02-16 18:09:45-0500: Loaded tuning parameters from: E:\KataGo-1.8.0/KataGoData/opencltuning/tune8_gpuGeForceGTX1080Ti_x19_y19_c128_mv8.txt
+2021-02-16 18:09:45-0500: OpenCL backend thread 0: Device 0 Model version 8
+2021-02-16 18:09:45-0500: OpenCL backend thread 0: Device 0 Model name: g170-b10c128-s1141046784-d204142634
+2021-02-16 18:09:45-0500: OpenCL backend thread 0: Device 0 FP16Storage false FP16Compute false FP16TensorCores false
+
+=========================================================================
+TUNING NOW
+Tuning using 64 visits.
+Automatically trying different numbers of threads to home in on the best:
+
+
+Possible numbers of threads to test: 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32,
+
+numSearchThreads =  5: 10 / 10 positions, visits/s = 1548.97 nnEvals/s = 1530.75 nnBatches/s = 649.20 avgBatchSize = 2.36 (0.4 secs)
+numSearchThreads = 12: 10 / 10 positions, visits/s = 2279.64 nnEvals/s = 2270.52 nnBatches/s = 449.85 avgBatchSize = 5.05 (0.3 secs)
+numSearchThreads = 10: 10 / 10 positions, visits/s = 2115.94 nnEvals/s = 2104.35 nnBatches/s = 481.16 avgBatchSize = 4.37 (0.3 secs)
+numSearchThreads = 20: 10 / 10 positions, visits/s = 2305.56 nnEvals/s = 2302.78 nnBatches/s = 302.78 avgBatchSize = 7.61 (0.4 secs)
+numSearchThreads = 16: 10 / 10 positions, visits/s = 2296.51 nnEvals/s = 2290.70 nnBatches/s = 348.84 avgBatchSize = 6.57 (0.3 secs)
+numSearchThreads = 24: 10 / 10 positions, visits/s = 2423.40 nnEvals/s = 2423.40 nnBatches/s = 278.55 avgBatchSize = 8.70 (0.4 secs)
+numSearchThreads = 32: 10 / 10 positions, visits/s = 2256.53 nnEvals/s = 2256.53 nnBatches/s = 190.02 avgBatchSize = 11.88 (0.4 secs)
+
+
+Optimal number of threads is fairly high, increasing the search limit and trying again.
+
+2021-02-16 18:09:54-0500: nnRandSeed0 = 15911300903486488030
+2021-02-16 18:09:54-0500: After dedups: nnModelFile0 = g170e-b10c128-s1141046784-d204142634.bin.gz useFP16 auto useNHWC auto
+2021-02-16 18:09:54-0500: Found OpenCL Platform 0: NVIDIA CUDA (NVIDIA Corporation) (OpenCL 1.2 CUDA 11.2.135)
+2021-02-16 18:09:54-0500: Found 1 device(s) on platform 0 with type CPU or GPU or Accelerator
+2021-02-16 18:09:54-0500: Found OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) (score 11000102)
+2021-02-16 18:09:54-0500: Creating context for OpenCL Platform: NVIDIA CUDA (NVIDIA Corporation) (OpenCL 1.2 CUDA 11.2.135)
+2021-02-16 18:09:54-0500: Using OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) OpenCL 1.2 CUDA (Extensions: cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_fp64 cl_khr_byte_addressable_store cl_khr_icd cl_khr_gl_sharing cl_nv_compiler_options cl_nv_device_attribute_query cl_nv_pragma_unroll cl_nv_d3d10_sharing cl_khr_d3d10_sharing cl_nv_d3d11_sharing cl_nv_copy_opts cl_nv_create_buffer cl_khr_int64_base_atomics cl_khr_int64_extended_atomics cl_khr_device_uuid)
+2021-02-16 18:09:54-0500: Loaded tuning parameters from: E:\KataGo-1.8.0/KataGoData/opencltuning/tune8_gpuGeForceGTX1080Ti_x19_y19_c128_mv8.txt
+2021-02-16 18:09:54-0500: OpenCL backend thread 0: Device 0 Model version 8
+2021-02-16 18:09:54-0500: OpenCL backend thread 0: Device 0 Model name: g170-b10c128-s1141046784-d204142634
+2021-02-16 18:09:54-0500: OpenCL backend thread 0: Device 0 FP16Storage false FP16Compute false FP16TensorCores false
+
+
+Possible numbers of threads to test: 16, 20, 24, 32, 40, 48, 64, 80, 96,
+
+numSearchThreads = 64: 10 / 10 positions, visits/s = 2534.93 nnEvals/s = 2534.93 nnBatches/s = 137.72 avgBatchSize = 18.41 (0.5 secs)
+numSearchThreads = 40: 10 / 10 positions, visits/s = 2434.99 nnEvals/s = 2434.99 nnBatches/s = 189.13 avgBatchSize = 12.88 (0.4 secs)
+numSearchThreads = 80: 10 / 10 positions, visits/s = 2771.32 nnEvals/s = 2771.32 nnBatches/s = 133.72 avgBatchSize = 20.72 (0.5 secs)
+numSearchThreads = 96: 10 / 10 positions, visits/s = 2750.87 nnEvals/s = 2750.87 nnBatches/s = 126.30 avgBatchSize = 21.78 (0.6 secs)
+
+
+Optimal number of threads is fairly high, increasing the search limit and trying again.
+
+2021-02-16 18:10:00-0500: nnRandSeed0 = 81162051282035686
+2021-02-16 18:10:00-0500: After dedups: nnModelFile0 = g170e-b10c128-s1141046784-d204142634.bin.gz useFP16 auto useNHWC auto
+2021-02-16 18:10:00-0500: Found OpenCL Platform 0: NVIDIA CUDA (NVIDIA Corporation) (OpenCL 1.2 CUDA 11.2.135)
+2021-02-16 18:10:00-0500: Found 1 device(s) on platform 0 with type CPU or GPU or Accelerator
+2021-02-16 18:10:00-0500: Found OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) (score 11000102)
+2021-02-16 18:10:00-0500: Creating context for OpenCL Platform: NVIDIA CUDA (NVIDIA Corporation) (OpenCL 1.2 CUDA 11.2.135)
+2021-02-16 18:10:00-0500: Using OpenCL Device 0: GeForce GTX 1080 Ti (NVIDIA Corporation) OpenCL 1.2 CUDA (Extensions: cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_fp64 cl_khr_byte_addressable_store cl_khr_icd cl_khr_gl_sharing cl_nv_compiler_options cl_nv_device_attribute_query cl_nv_pragma_unroll cl_nv_d3d10_sharing cl_khr_d3d10_sharing cl_nv_d3d11_sharing cl_nv_copy_opts cl_nv_create_buffer cl_khr_int64_base_atomics cl_khr_int64_extended_atomics cl_khr_device_uuid)
+2021-02-16 18:10:00-0500: Loaded tuning parameters from: E:\KataGo-1.8.0/KataGoData/opencltuning/tune8_gpuGeForceGTX1080Ti_x19_y19_c128_mv8.txt
+2021-02-16 18:10:00-0500: OpenCL backend thread 0: Device 0 Model version 8
+2021-02-16 18:10:00-0500: OpenCL backend thread 0: Device 0 Model name: g170-b10c128-s1141046784-d204142634
+2021-02-16 18:10:00-0500: OpenCL backend thread 0: Device 0 FP16Storage false FP16Compute false FP16TensorCores false
+
+
+Possible numbers of threads to test: 48, 64, 80, 96, 128, 160, 192,
+
+numSearchThreads = 128: 10 / 10 positions, visits/s = 2716.93 nnEvals/s = 2716.93 nnBatches/s = 103.84 avgBatchSize = 26.16 (0.7 secs)
+
+
+Ordered summary of results:
+
+numSearchThreads =  5: 10 / 10 positions, visits/s = 1548.97 nnEvals/s = 1530.75 nnBatches/s = 649.20 avgBatchSize = 2.36 (0.4 secs) (EloDiff baseline)
+numSearchThreads = 10: 10 / 10 positions, visits/s = 2115.94 nnEvals/s = 2104.35 nnBatches/s = 481.16 avgBatchSize = 4.37 (0.3 secs) (EloDiff +112)
+numSearchThreads = 12: 10 / 10 positions, visits/s = 2279.64 nnEvals/s = 2270.52 nnBatches/s = 449.85 avgBatchSize = 5.05 (0.3 secs) (EloDiff +139)
+numSearchThreads = 16: 10 / 10 positions, visits/s = 2296.51 nnEvals/s = 2290.70 nnBatches/s = 348.84 avgBatchSize = 6.57 (0.3 secs) (EloDiff +142)
+numSearchThreads = 20: 10 / 10 positions, visits/s = 2305.56 nnEvals/s = 2302.78 nnBatches/s = 302.78 avgBatchSize = 7.61 (0.4 secs) (EloDiff +143)
+numSearchThreads = 24: 10 / 10 positions, visits/s = 2423.40 nnEvals/s = 2423.40 nnBatches/s = 278.55 avgBatchSize = 8.70 (0.4 secs) (EloDiff +161)
+numSearchThreads = 32: 10 / 10 positions, visits/s = 2256.53 nnEvals/s = 2256.53 nnBatches/s = 190.02 avgBatchSize = 11.88 (0.4 secs) (EloDiff +136)
+numSearchThreads = 40: 10 / 10 positions, visits/s = 2434.99 nnEvals/s = 2434.99 nnBatches/s = 189.13 avgBatchSize = 12.88 (0.4 secs) (EloDiff +163)
+numSearchThreads = 64: 10 / 10 positions, visits/s = 2534.93 nnEvals/s = 2534.93 nnBatches/s = 137.72 avgBatchSize = 18.41 (0.5 secs) (EloDiff +177)
+numSearchThreads = 80: 10 / 10 positions, visits/s = 2771.32 nnEvals/s = 2771.32 nnBatches/s = 133.72 avgBatchSize = 20.72 (0.5 secs) (EloDiff +210)
+numSearchThreads = 96: 10 / 10 positions, visits/s = 2750.87 nnEvals/s = 2750.87 nnBatches/s = 126.30 avgBatchSize = 21.78 (0.6 secs) (EloDiff +207)
+numSearchThreads = 128: 10 / 10 positions, visits/s = 2716.93 nnEvals/s = 2716.93 nnBatches/s = 103.84 avgBatchSize = 26.16 (0.7 secs) (EloDiff +202)
+
+
+Based on some test data, each speed doubling gains perhaps ~250 Elo by searching deeper.
+Based on some test data, each thread costs perhaps 7 Elo if using 800 visits, and 2 Elo if using 5000 visits (by making MCTS worse).
+So APPROXIMATELY based on this benchmark, if you intend to do a 3600 second search:
+numSearchThreads =  5: (baseline)
+numSearchThreads = 10:  +112 Elo
+numSearchThreads = 12:  +139 Elo
+numSearchThreads = 16:  +142 Elo
+numSearchThreads = 20:  +143 Elo
+numSearchThreads = 24:  +161 Elo
+numSearchThreads = 32:  +136 Elo
+numSearchThreads = 40:  +163 Elo
+numSearchThreads = 64:  +177 Elo
+numSearchThreads = 80:  +210 Elo (recommended)
+numSearchThreads = 96:  +207 Elo
+numSearchThreads = 128:  +202 Elo
+
+Using 80 numSearchThreads!
+
+=========================================================================
+DONE
+
+Writing new config file to broadgo.cfg
+You should be now able to run KataGo with this config via something like:
+katago gtp -model 'g170e-b10c128-s1141046784-d204142634.bin.gz' -config 'broadgo.cfg'
+
+Feel free to look at and edit the above config file further by hand in a txt editor.
+For more detailed notes about performance and what options in the config do, see:
+https://github.com/lightvector/KataGo/blob/master/cpp/configs/gtp_example.cfg
