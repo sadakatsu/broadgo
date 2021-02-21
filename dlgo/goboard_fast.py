@@ -395,3 +395,15 @@ class GameState():
             return self.next_player
         game_result = compute_game_result(self)
         return game_result.winner
+
+    # I (sadakatsu) added this so I can build a game only once, but then transform the moves later based upon what
+    # representation I prefer.
+    @property
+    def history(self):
+        moves = []
+        current = self
+        while current:
+            if current.last_move or current.previous_state:
+                moves.insert(0, current.last_move)
+            current = current.previous_state
+        return moves
