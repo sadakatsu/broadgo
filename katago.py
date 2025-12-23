@@ -19,7 +19,18 @@ class LineType(Enum):
 
 
 class KataGo:
-    def __init__(self, executable, configuration, model, analysis_threads=10, search_threads=1, output=False):
+    def __init__(
+        self,
+        executable,
+        configuration,
+        model,
+        human_model,
+        analysis_threads=10,
+        search_threads=1,
+        max_playouts=512,
+        max_visits=1048576,
+        output=False
+    ):
         self.output = output
         if output:
             print('  Launching KataGo...')
@@ -46,8 +57,14 @@ class KataGo:
                         print(f'  {name} thread has finished.')
                     break
 
-        command = f'{executable} analysis -config {configuration} -model {model} -analysis-threads {analysis_threads} ' \
-                  f'-override-config numSearchThreads={search_threads}'
+        command = f'{executable} analysis -config {configuration} -model {model} ' \
+                  f'-human-model {human_model} ' \
+                  f'-override-config numSearchThreads={search_threads} ' \
+                  f'-override-config numAnalysisThreads={analysis_threads} ' \
+                  f'-override-config maxPlayouts={max_playouts} ' \
+                  f'-override-config maxVisits={max_visits} '
+
+        print(f'KataGo command: {command}')
         self._process = subprocess.Popen(
             command,
             stderr=subprocess.PIPE,
@@ -202,3 +219,4 @@ class Response:
     isDuringSearch: Optional[bool] = None
     ownership: Optional[List[float]] = field(default_factory=list)
     policy: Optional[List[float]] = field(default_factory=list)
+    humanPolicy: Optional[List[float]] = field(default_factory=list)

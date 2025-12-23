@@ -170,6 +170,7 @@ class Position:
         command.initialPlayer = KataGoPlayer.b if self.initial_player == 'b' else KataGoPlayer.w
         command.rules = self.ruleset
         command.initialStones = initial_stones
+        command.includeOwnership = True
 
         command.moves = []
         player = command.initialPlayer

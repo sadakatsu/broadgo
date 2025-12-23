@@ -1,5 +1,9 @@
-executable: "E:/KataGo-1.8.0/katago.exe"
-configuration: "E:/KataGo-1.8.0/shallow.cfg"
-model: "E:/KataGo-1.8.0/g170e-b10c128-s1141046784-d204142634.bin.gz"
-analysisThreads: 12
+executable: "C:/Go/KataGo/katago-v1.15.3-cuda12.1-cudnn8.9.7-windows-x64/katago.exe"
+configuration: "C:/Go/KataGo/katago-v1.15.3-cuda12.1-cudnn8.9.7-windows-x64/broadgo.cfg"
+model: "C:/Go/KataGo/networks/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz"
+humanModel: "C:/Go/KataGo/networks/b18c384nbt-humanv0.bin.gz"
+analysisThreads: 128
 searchThreads: 1
+maxPlayouts: 512
+maxVisits: 1048576
+humanProfile: preaz_15k  # rank_15k for AI-informed profiles

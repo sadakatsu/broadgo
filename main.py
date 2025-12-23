@@ -29,8 +29,12 @@ class KataGoExecution:
         executable,
         configuration,
         model,
+        human_model,
         analysis_threads,
-        search_threads
+        search_threads,
+        max_playouts,
+        max_visits,
+        human_profile: Optional[str]
     ):
         self.completed_count = 0
         self.elapsed = 0
@@ -43,12 +47,17 @@ class KataGoExecution:
         self.query_to_positions = {}
         self.submitted = set()
 
+        self._human_profile = human_profile
+
         self.katago = KataGo(
             executable,
             configuration,
             model,
+            human_model,
             analysis_threads=analysis_threads,
-            search_threads=search_threads
+            search_threads=search_threads,
+            max_playouts=max_playouts,
+            max_visits=max_visits,
         )
 
         while not self.katago.ready:
@@ -67,7 +76,7 @@ class KataGoExecution:
                         print('KataGo Log >', line)
                     else:
                         try:
-                            # print('KataGo sent:', line)
+                            print('KataGo sent:', line)
                             response = Response.from_json(line)
 
                             # KataGo 1.8.0 seems to have broken the rootInfo field insofar as its documented purpose
@@ -141,6 +150,12 @@ class KataGoExecution:
 
             for c in commands:
                 if c.id not in self.submitted:
+                    # QUICK HACK: Add the human profile to the Command.
+                    if self._human_profile:
+                        if not c.overrideSettings:
+                            c.overrideSettings = {}
+                        c.overrideSettings['humanSLProfile'] = self._human_profile
+
                     self.katago.write_message(c.to_dict())
                     self.submitted_count += 1
                     self.submitted.add(c.id)
@@ -178,6 +193,7 @@ class KataGoExecution:
                 reference_point = undo(original_point)
                 index = (19 - reference_point.row) * 19 + (reference_point.col - 1)
                 payload['direct']['policy'][index] = position.policy[i]
+                payload['direct']['humanPolicy'][index] = position.humanPolicy[i]
 
             payload['movesComplete'] += 1
 
@@ -247,13 +263,27 @@ api.add_resource(PositionResource, '/', '/<id>')
 
 if __name__ == '__main__':
     with open('broadgo.yaml') as infile:
-        application_configuration = yaml.load(infile)
+        application_configuration = yaml.load(infile, yaml.SafeLoader)
 
     executable = application_configuration['executable']
     configuration = application_configuration['configuration']
     model = application_configuration['model']
+    human_model = application_configuration['humanModel']
     analysis_threads = application_configuration['analysisThreads']
     search_threads = application_configuration['searchThreads']
+    max_playouts = application_configuration['maxPlayouts']
+    max_visits = application_configuration['maxVisits']
+    human_profile = application_configuration['humanProfile']
 
-    katago_execution = KataGoExecution(executable, configuration, model, analysis_threads, search_threads)
+    katago_execution = KataGoExecution(
+        executable,
+        configuration,
+        model,
+        human_model,
+        analysis_threads,
+        search_threads,
+        max_playouts,
+        max_visits,
+        human_profile,
+    )
     app.run(debug=True, use_reloader=False)
