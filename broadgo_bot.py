@@ -22,7 +22,7 @@ from position import Position
 class BroadGoServer:
     def __init__(self):
         katago_ready_pattern = re.compile(r'^.*Started, ready to begin handling requests.*$')
-        server_ready_pattern = re.compile(r'^.*Running on (\S+) \(Press CTRL\+C to quit\).*$')
+        server_ready_pattern = re.compile(r'^.*Running on (\S+).*$')
 
         def read_stream(_, stream, _type, buffer):
             while True:
@@ -39,6 +39,8 @@ class BroadGoServer:
                             if matcher:
                                 self._server_ready = True
                                 self._host = matcher.group(1)
+                                if not self._host.endswith('/'):
+                                    self._host += '/'
                     buffer.append((_type, line))
                 else:
                     break
@@ -255,7 +257,7 @@ def run_gtp(broadgo: BroadGoServer, heuristic: Callable[[dict, GameState], Tuple
                     # success = f'{move}\n# expected result {expected_result}, win rate {win_rate}, prior {prior}'
                     print_board(next_position.game.board, prefix='# ')
                 except ValueError:
-                    error = f'invalid arguments: {arguments[0]} {arguments[1]}'
+                    error = f'invalid arguments: {arguments[0]}'
         elif command == 'known_command':
             if len(arguments) != 1:
                 error = 'wrong number of arguments'

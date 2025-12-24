@@ -35,8 +35,6 @@ export class DataGridComponent {
     toggle: boolean = true;
     percentage: number = 100;
 
-    changeDetectorRef: ChangeDetectorRef;
-
     private readonly colorCodes = [
         '#00FF00', // 0
         '#33FF00', // 1
