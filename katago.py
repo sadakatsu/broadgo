@@ -220,3 +220,5 @@ class Response:
     ownership: Optional[List[float]] = field(default_factory=list)
     policy: Optional[List[float]] = field(default_factory=list)
     humanPolicy: Optional[List[float]] = field(default_factory=list)
+
+    simplicity: Optional[float] = None

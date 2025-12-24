@@ -1,0 +1,7 @@
+<button
+    class="btn"
+    [ngClass]="{'btn-primary': value, 'btn-secondary': !value}"
+    (click)="onClick()"
+>
+    {{ label }}
+</button>

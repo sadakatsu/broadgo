@@ -1,6 +1,8 @@
 from threading import Lock, Thread
 from typing import Callable, List, Optional, Dict
 import time
+
+import numpy as np
 import yaml
 
 from dlgo.gotypes import Point
@@ -10,6 +12,7 @@ from flask_cors import CORS
 from flask_restful import Resource, Api
 from position import Position, get_transformation, get_undo, translate_label_to_point
 from katago import KataGo, Response, LineType, Command
+from scoring_procedure import ScoringProcedure
 
 app = Flask(__name__)
 api = Api(app)
@@ -21,6 +24,23 @@ def point_to_label(point: Optional[Point]) -> str:
 
 
 policy_points = [Point(row, col) for row in range(19, 0, -1) for col in range(1, 20)]
+procedure = ScoringProcedure('configuration/hyperparameters2.npy')
+procedure.score(np.zeros((1,)))
+
+
+def calculate_expected_loss(response: Response) -> float:
+    favorite_lead = response.moveInfos[0].scoreLead
+
+    expected_loss = 0.
+    overall_likelihood = 0.
+    for mi in response.moveInfos:
+        loss = favorite_lead - mi.scoreLead
+        prior = mi.prior
+        expected_loss += loss * prior
+        overall_likelihood += prior
+    expected_loss /= overall_likelihood
+
+    return expected_loss
 
 
 class KataGoExecution:
@@ -90,6 +110,10 @@ class KataGoExecution:
                             self.position_results[response.id] = response
 
                             self._log_received(response)
+
+                            # HACK: Let's add the moment's Simplicity score.
+                            expected_loss = calculate_expected_loss(response)
+                            response.simplicity = procedure.score(np.array([expected_loss]))[0]
                         except Exception as e:
                             print('ERROR:', e)
 
@@ -204,6 +228,7 @@ class KataGoExecution:
             if v in self.position_results:
                 payload['analyses'][restored_k] = self.position_results[v].rootInfo.to_dict()
                 payload['analyses'][restored_k]['id'] = self.position_results[v].id
+                payload['analyses'][restored_k]['simplicity'] = self.position_results[v].simplicity
                 payload['movesComplete'] += 1
 
                 # TODO: How can I make the included ID provide the correct transformation for the nested position?  I

@@ -9,6 +9,8 @@ import { SetupComponent } from './components/setup/setup.component';
 import { WgoComponent } from './components/wgo/wgo.component';
 import { SearchComponent } from './components/search/search.component';
 import { DataGridComponent } from './components/data-grid/data-grid.component';
+import { ToggleComponent } from './components/toggle/toggle.component';
+import {SliderModule} from "primeng/slider";
 
 @NgModule({
     declarations: [
@@ -17,12 +19,14 @@ import { DataGridComponent } from './components/data-grid/data-grid.component';
         WgoComponent,
         SearchComponent,
         DataGridComponent,
+        ToggleComponent,
     ],
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
         HttpClientModule,
+        SliderModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

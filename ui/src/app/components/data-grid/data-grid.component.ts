@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import {ChangeDetectorRef, Component, Input} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompositeAnalysis } from '../../domain/composite_analysis';
 import { Coordinate } from '../../domain/coordinate';
@@ -32,6 +32,10 @@ export class DataGridComponent {
     data: CompositeAnalysis;
 
     position$: Observable<SimplePosition>;
+    toggle: boolean = true;
+    percentage: number = 100;
+
+    changeDetectorRef: ChangeDetectorRef;
 
     private readonly colorCodes = [
         '#00FF00', // 0
@@ -57,7 +61,7 @@ export class DataGridComponent {
         '#0000FF', // 20
     ];
 
-    constructor(positionService: PositionService) {
+    constructor(positionService: PositionService, private changeDetectorRef: ChangeDetectorRef) {
         this.position$ = positionService.positions$
             .pipe(
                 map(position => this.transformPosition(position))
@@ -82,12 +86,16 @@ export class DataGridComponent {
         return { black, white };
     }
 
-    transformData() {
+    transformData(useLoss: boolean, percentage: number) {
         const transformation: Array<Representation> = [];
 
         let worst = Infinity;
         let best = -Infinity;
-        for (const [key, value] of Object.entries(this.data.analyses)) {
+
+        let worstSimplicity = -Infinity;
+        let bestSimplicity = Infinity;
+
+        for (const value of Object.values(this.data.analyses)) {
             const score = (value as RootAnalysis).scoreLead;
             if (score < worst) {
                 worst = score;
@@ -95,14 +103,56 @@ export class DataGridComponent {
             if (score > best) {
                 best = score;
             }
+
+            const simplicity = (value as RootAnalysis).simplicity;
+            if (simplicity > worstSimplicity) {
+                worstSimplicity = simplicity;
+            }
+            if (simplicity < bestSimplicity) {
+                bestSimplicity = simplicity;
+            }
         }
-        const scale = best - worst;
+
+        let threshold = Infinity;
+        if (percentage < 100) {
+            let losses: Array<number> = [];
+            for (const value of Object.values(this.data.analyses)) {
+                const cast = value as RootAnalysis;
+                losses.push(best - cast.scoreLead);
+            }
+            losses.sort((a, b) => a - b);
+            const rawIndex = (losses.length - 1) * (percentage / 100.);
+            const floorIndex = Math.floor(rawIndex);
+
+            if (Math.abs(rawIndex - floorIndex) < 1e-6) {
+                threshold = losses[floorIndex];
+            } else {
+                const ceilingIndex = Math.ceil(rawIndex);
+                const proportion = rawIndex - floorIndex;
+                threshold = losses[floorIndex] * proportion + losses[ceilingIndex] * (1. - proportion);
+            }
+        }
 
         for (const [key, value] of Object.entries(this.data.analyses)) {
             const coordinate = label_to_coordinate(key);
-            const score = (value as RootAnalysis).scoreLead;
+            const cast = value as RootAnalysis;
+            const pointLoss = best - cast.scoreLead;
+            if (pointLoss > threshold) {
+                continue;
+            }
 
-            const loss = best - score;
+            const simplicityLoss = cast.simplicity - bestSimplicity;
+
+            let score: number;
+            let loss: number;
+            if (useLoss) {
+                score = cast.scoreLead;
+                loss = pointLoss;
+            } else {
+                score = cast.simplicity;
+                loss = simplicityLoss;
+            }
+
             let color: string;
             const simplified = Math.floor(loss);
             if (simplified <= 20) {
@@ -128,5 +178,10 @@ export class DataGridComponent {
     getPass(transformed) {
         const found = transformed.filter(e => !Number.isFinite(e.x));
         return found ? found[0] : null;
+    }
+
+    onDisplayToggle(value: boolean) {
+        this.toggle = value;
+        this.changeDetectorRef.markForCheck();
     }
 }

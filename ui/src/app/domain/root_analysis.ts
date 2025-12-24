@@ -4,4 +4,5 @@ export interface RootAnalysis {
     utility: number;
     winrate: number;
     visits: number;
+    simplicity: number;
 }

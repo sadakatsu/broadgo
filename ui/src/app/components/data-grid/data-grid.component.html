@@ -1,4 +1,4 @@
-<span *ngIf="transformData() as transformed">
+<span *ngIf="transformData(toggle, percentage) as transformed">
     <svg
         class="w-100 h-100"
         style="background-image: url('assets/images/board-final.svg'); background-size: cover;"
@@ -443,16 +443,26 @@
         </svg>
     </svg>
 
-    <div class="pt-3 text-center">
-        <ng-container *ngIf="getPass(transformed) as pass; else nopass">
-            <div
-                class="btn"
-                style="color: black; cursor: auto;"
-                [ngStyle]="{ 'backgroundColor': pass.color }"
-            >
-                Pass: {{ pass.score }}
+    <div class="container pt-3 text-center">
+        <div class="align-items-center row">
+            <div class="col">
+                <bg-toggle false="Simplicity" true="Loss" (toggle)="onDisplayToggle($event)"></bg-toggle>
             </div>
-        </ng-container>
+            <div class="col">
+                <ng-container *ngIf="getPass(transformed) as pass; else nopass">
+                    <div
+                            class="btn"
+                            style="color: black; cursor: auto;"
+                            [ngStyle]="{ 'backgroundColor': pass.color }"
+                    >
+                        Pass: {{ pass.score }}
+                    </div>
+                </ng-container>
+            </div>
+            <div class="col">
+                <p-slider [min]="5" [max]="100" [step]="5" [(ngModel)]="percentage"></p-slider>
+            </div>
+        </div>
     </div>
 </span>
 
